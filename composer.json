@@ -1,0 +1,29 @@
+{
+    "name": "verdient/wechat-work",
+    "description": "WechatWork",
+    "type": "library",
+    "keywords": [
+        "WechatWork"
+    ],
+    "homepage": "https://github.com/Verdient/wechat-work",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Verdient.",
+            "email": "fagui.zhu@foxmail.com",
+            "homepage": "https://github.com/Verdient"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/Verdient/wechat-work/issues",
+        "source": "https://github.com/Verdient/wechat-work"
+    },
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Verdient\\WechatWork\\": "src"
+        }
+    }
+}
