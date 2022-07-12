@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Verdient\WechatWork;
 
 use chorus\InvalidCallException;
+use chorus\InvalidParamException;
 
 /**
  * 请求
@@ -19,10 +20,10 @@ class Request extends \Verdient\http\Request
     public $corpID = null;
 
     /**
-     * @var string 企业秘钥
+     * @var array 企业秘钥
      * @author Verdient。
      */
-    public $corpSecret = null;
+    public $corpSecrets = [];
 
     /**
      * @var string 临时文件夹
@@ -47,13 +48,83 @@ class Request extends \Verdient\http\Request
 
     /**
      * 附带令牌
+     * @param string $agentId 代理编号
      * @return static
      * @author Verdient。
      */
-    public function withToken()
+    public function withToken($agentId)
     {
-        $this->addQuery('access_token', $this->getAccessToken());
+        $this->addQuery('access_token', $this->getAccessToken($agentId));
         return $this;
+    }
+
+    /**
+     * 获取缓存路径
+     * @param string $agentId 代理编号
+     * @return string
+     * @author Verdient。
+     */
+    protected function getCachePath($agentId)
+    {
+        return $this->tmpDir . DIRECTORY_SEPARATOR . $agentId . '_access_token';
+    }
+
+    /**
+     * 获取企业秘钥
+     * @param string $agentId 代理编号
+     * @throws InvalidParamException
+     * @return string
+     * @author Verdient。
+     */
+    protected function getCorpSecret($agentId)
+    {
+        if (!isset($this->corpSecrets[$agentId])) {
+            throw new InvalidParamException('Unknown Agent ID ' . $agentId);
+        }
+        return $this->corpSecrets[$agentId];
+    }
+
+    /**
+     * 从缓存中获取授权秘钥
+     * @param string $agentId 代理编号
+     * @return string|false
+     * @author Verdient。
+     */
+    protected function getAccessTokenFromCache($agentId)
+    {
+        $corpSecret = $this->getCorpSecret($agentId);
+        $path = $this->getCachePath($agentId);
+        if (!file_exists($path)) {
+            return false;
+        }
+        if ($accessToken = @unserialize(file_get_contents($path))) {
+            if ($accessToken instanceof AccessToken) {
+                if ($accessToken->corpID == $this->corpID && $accessToken->corpSecret == $corpSecret && $accessToken->agentId == $agentId && !$accessToken->isExpired()) {
+                    return $accessToken->accessToken;
+                }
+            }
+        }
+        @unlink($path);
+        return false;
+    }
+
+    /**
+     * 设置授权秘钥缓存
+     * @param string $agentId 代理编号
+     * @param string $accessToken 授权秘钥
+     * @param int $expiredAt 过期时间
+     * @return bool
+     * @author Verdient。
+     */
+    protected function setAccessTokenCache($agentId, $accessToken, $expiredAt)
+    {
+        $corpSecret = $this->getCorpSecret($agentId);
+        $path = $this->getCachePath($agentId);
+        if (!is_dir(dirname($path))) {
+            mkdir($this->tmpDir, 0777, true);
+        }
+        $accessToken = new AccessToken($accessToken, $expiredAt, $agentId, $this->corpID, $corpSecret);
+        return file_put_contents($path, serialize($accessToken)) !== false;
     }
 
     /**
@@ -61,48 +132,27 @@ class Request extends \Verdient\http\Request
      * @return string
      * @author Verdient。
      */
-    public function getAccessToken()
+    public function getAccessToken($agentId)
     {
-        $path = $this->tmpDir . DIRECTORY_SEPARATOR . 'access_token';
-        if (!is_dir($this->tmpDir)) {
-            mkdir($this->tmpDir, 0777, true);
+        if ($accessToken = $this->getAccessTokenFromCache($agentId)) {
+            return $accessToken;
         }
-        $accessToken = null;
-        if (file_exists($path)) {
-            try {
-                $content = unserialize(file_get_contents($path));
-                if (isset($content['accessToken']) && isset($content['corpID']) && isset($content['corpSecret']) && isset($content['expiredAt'])) {
-                    if ($content['corpID'] == $this->corpID && $content['corpSecret'] == $this->corpSecret && $content['expiredAt'] > time()) {
-                        $accessToken = $content['accessToken'];
-                    }
-                }
-            } catch (\Throwable $e) {
-                unlink($path);
-            }
+        $request = new static;
+        $response = $request
+            ->setUrl($this->requestPath . '/gettoken')
+            ->setMethod('POST')
+            ->setBody([
+                'corpid' => $this->corpID,
+                'corpsecret' => $this->getCorpSecret($agentId)
+            ])
+            ->send();
+        if (!$response->getIsOK()) {
+            throw new InvalidCallException($response->getErrorMessage());
         }
-        if (!$accessToken) {
-            $request = new static;
-            $response = $request
-                ->setUrl($this->requestPath . '/gettoken')
-                ->setMethod('POST')
-                ->setBody([
-                    'corpid' => $this->corpID,
-                    'corpsecret' => $this->corpSecret
-                ])
-                ->send();
-            if ($response->getIsOK()) {
-                $data = $response->getData();
-                $accessToken = $data['access_token'];
-                file_put_contents($path, serialize([
-                    'corpID' => $this->corpID,
-                    'corpSecret' => $this->corpSecret,
-                    'accessToken' => $accessToken,
-                    'expiredAt' => $data['expires_in'] + time() - 30
-                ]));
-            } else {
-                throw new InvalidCallException($response->getErrorMessage());
-            }
-        }
+        $data = $response->getData();
+        $accessToken = $data['access_token'];
+        $expiredAt = $data['expires_in'] + time() - 30;
+        $this->setAccessTokenCache($agentId, $accessToken, $expiredAt);
         return $accessToken;
     }
 }

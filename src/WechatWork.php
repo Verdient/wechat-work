@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Verdient\WechatWork;
@@ -36,10 +37,10 @@ class WechatWork extends AbstractClient
     public $corpID = null;
 
     /**
-     * @var string 企业秘钥
+     * @var array 企业秘钥
      * @author Verdient。
      */
-    public $corpSecret = null;
+    public $corpSecrets = [];
 
     /**
      * @var string 临时文件夹
@@ -54,7 +55,7 @@ class WechatWork extends AbstractClient
     public function __construct($config = [])
     {
         parent::__construct($config);
-        if($this->tmpDir === null){
+        if ($this->tmpDir === null) {
             $this->tmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'wechat-work';
         }
     }
@@ -66,10 +67,13 @@ class WechatWork extends AbstractClient
     public function request($path): Request
     {
         $this->request = Request::class;
+        /**
+         * @var Request
+         */
         $request = parent::request($path);
         $request->bodySerializer = 'json';
         $request->corpID = $this->corpID;
-        $request->corpSecret = $this->corpSecret;
+        $request->corpSecrets = $this->corpSecrets;
         $request->tmpDir = $this->tmpDir;
         $request->requestPath = $this->getRequestPath();
         return $request;
