@@ -64,35 +64,42 @@ class Request extends \Verdient\http\Request
     public function getAccessToken()
     {
         $path = $this->tmpDir . DIRECTORY_SEPARATOR . 'access_token';
-        if(!is_dir($this->tmpDir)){
+        if (!is_dir($this->tmpDir)) {
             mkdir($this->tmpDir, 0777, true);
         }
         $accessToken = null;
-        if(file_exists($path)){
-            try{
+        if (file_exists($path)) {
+            try {
                 $content = unserialize(file_get_contents($path));
-                $expiredAt = $content['expiredAt'] ?? 0;
-                if($expiredAt > time() - 60){
-                    $accessToken = $content['accessToken'] ?? null;
+                if (isset($content['accessToken']) && isset($content['corpID']) && isset($content['corpSecret']) && isset($content['expiredAt'])) {
+                    if ($content['corpID'] == $this->corpID && $content['corpSecret'] == $this->corpSecret && $content['expiredAt'] > time()) {
+                        $accessToken = $content['accessToken'];
+                    }
                 }
-            }catch(\Throwable $e){
+            } catch (\Throwable $e) {
                 unlink($path);
             }
         }
-        if(!$accessToken){
+        if (!$accessToken) {
             $request = new static;
-            $response = $request->setUrl($this->requestPath . '/gettoken')->setBody([
-                'corpid' => $this->corpID,
-                'corpsecret' => $this->corpSecret
-            ])->setMethod('POST')->send();
-            if($response->getIsOK()){
+            $response = $request
+                ->setUrl($this->requestPath . '/gettoken')
+                ->setMethod('POST')
+                ->setBody([
+                    'corpid' => $this->corpID,
+                    'corpsecret' => $this->corpSecret
+                ])
+                ->send();
+            if ($response->getIsOK()) {
                 $data = $response->getData();
                 $accessToken = $data['access_token'];
                 file_put_contents($path, serialize([
+                    'corpID' => $this->corpID,
+                    'corpSecret' => $this->corpSecret,
                     'accessToken' => $accessToken,
                     'expiredAt' => $data['expires_in'] + time() - 30
                 ]));
-            }else{
+            } else {
                 throw new InvalidCallException($response->getErrorMessage());
             }
         }
