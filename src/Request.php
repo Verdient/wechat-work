@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Verdient\WechatWork;
 
-use chorus\InvalidCallException;
-use chorus\InvalidParamException;
+use Exception;
+use Verdient\http\Request as HttpRequest;
 
 /**
  * 请求
  * @author Verdient。
  */
-class Request extends \Verdient\http\Request
+class Request extends HttpRequest
 {
     /**
      * @var string 企业编号
@@ -79,7 +79,7 @@ class Request extends \Verdient\http\Request
     protected function getCorpSecret($agentId)
     {
         if (!isset($this->corpSecrets[$agentId])) {
-            throw new InvalidParamException('Unknown Agent ID ' . $agentId);
+            throw new Exception('Unknown Agent ID ' . $agentId);
         }
         return $this->corpSecrets[$agentId];
     }
@@ -147,7 +147,7 @@ class Request extends \Verdient\http\Request
             ])
             ->send();
         if (!$response->getIsOK()) {
-            throw new InvalidCallException($response->getErrorMessage());
+            throw new Exception($response->getErrorMessage());
         }
         $data = $response->getData();
         $accessToken = $data['access_token'];

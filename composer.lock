@@ -4,72 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b51611c6f8dbd82043306d404b072a1",
+    "content-hash": "e43b08fb90f582a8d31afb642529a0f0",
     "packages": [
         {
-            "name": "verdient/chorus",
-            "version": "0.1.0",
+            "name": "verdient/http",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Verdient/chorus.git",
-                "reference": "aaaea387a389b75b39528862f1632f18386702a4"
+                "url": "https://github.com/Verdient/http.git",
+                "reference": "9c9ffcf0312ac9b2af74cf9f3c020c6d7aa0da3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Verdient/chorus/zipball/aaaea387a389b75b39528862f1632f18386702a4",
-                "reference": "aaaea387a389b75b39528862f1632f18386702a4",
+                "url": "https://api.github.com/repos/Verdient/http/zipball/9c9ffcf0312ac9b2af74cf9f3c020c6d7aa0da3e",
+                "reference": "9c9ffcf0312ac9b2af74cf9f3c020c6d7aa0da3e",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.0.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "chorus\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Verdient.",
-                    "email": "fagui.zhu@foxmail.com",
-                    "homepage": "https://github.com/Verdient"
-                }
-            ],
-            "description": "Something basic but amazing",
-            "homepage": "https://github.com/Verdient/chorus",
-            "keywords": [
-                "base",
-                "basic",
-                "support"
-            ],
-            "support": {
-                "issues": "https://github.com/Verdient/chorus/issues",
-                "source": "https://github.com/Verdient/chorus"
-            },
-            "time": "2021-04-27T09:32:18+00:00"
-        },
-        {
-            "name": "verdient/http",
-            "version": "0.4.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Verdient/http.git",
-                "reference": "118de7328a321678fd26a5768e9f5fa399058812"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Verdient/http/zipball/118de7328a321678fd26a5768e9f5fa399058812",
-                "reference": "118de7328a321678fd26a5768e9f5fa399058812",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.0.0",
-                "verdient/chorus": "~0.1.0"
             },
             "require-dev": {
                 "swoole/ide-helper": "^4.8"
@@ -102,26 +54,25 @@
                 "issues": "https://github.com/Verdient/http/issues",
                 "source": "https://github.com/Verdient/http"
             },
-            "time": "2022-07-11T10:30:18+00:00"
+            "time": "2023-08-16T11:20:31+00:00"
         },
         {
             "name": "verdient/http-api",
-            "version": "0.0.0",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Verdient/http-api.git",
-                "reference": "21eea6abcbb009ebea190dc3b75f6215ec68905c"
+                "reference": "9edd60fade3a2a758c29f6263e150e9e10315d1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Verdient/http-api/zipball/21eea6abcbb009ebea190dc3b75f6215ec68905c",
-                "reference": "21eea6abcbb009ebea190dc3b75f6215ec68905c",
+                "url": "https://api.github.com/repos/Verdient/http-api/zipball/9edd60fade3a2a758c29f6263e150e9e10315d1e",
+                "reference": "9edd60fade3a2a758c29f6263e150e9e10315d1e",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.0.0",
-                "verdient/chorus": "~0.1.0",
-                "verdient/http": "~0.4.0"
+                "verdient/http": "^1.0"
             },
             "type": "library",
             "autoload": {
@@ -151,7 +102,7 @@
                 "issues": "https://github.com/Verdient/http-api/issues",
                 "source": "https://github.com/Verdient/http-api"
             },
-            "time": "2021-04-27T06:52:31+00:00"
+            "time": "2023-08-16T11:30:27+00:00"
         }
     ],
     "packages-dev": [],
@@ -164,5 +115,5 @@
         "php": ">=7.0.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }

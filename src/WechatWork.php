@@ -71,7 +71,6 @@ class WechatWork extends AbstractClient
          * @var Request
          */
         $request = parent::request($path);
-        $request->bodySerializer = 'json';
         $request->corpID = $this->corpID;
         $request->corpSecrets = $this->corpSecrets;
         $request->tmpDir = $this->tmpDir;
