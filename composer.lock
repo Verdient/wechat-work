@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "verdient/http",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Verdient/http.git",
-                "reference": "9c9ffcf0312ac9b2af74cf9f3c020c6d7aa0da3e"
+                "reference": "ed8dd15dca86df5583429636bc80d0dcf4e6fd36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Verdient/http/zipball/9c9ffcf0312ac9b2af74cf9f3c020c6d7aa0da3e",
-                "reference": "9c9ffcf0312ac9b2af74cf9f3c020c6d7aa0da3e",
+                "url": "https://api.github.com/repos/Verdient/http/zipball/ed8dd15dca86df5583429636bc80d0dcf4e6fd36",
+                "reference": "ed8dd15dca86df5583429636bc80d0dcf4e6fd36",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "issues": "https://github.com/Verdient/http/issues",
                 "source": "https://github.com/Verdient/http"
             },
-            "time": "2023-08-16T11:20:31+00:00"
+            "time": "2023-08-16T11:41:01+00:00"
         },
         {
             "name": "verdient/http-api",
